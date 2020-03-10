@@ -1,0 +1,40 @@
+version: '2'
+services:
+  mariadb:
+    image: 'bitnami/mariadb:10.4.12'
+    volumes:
+      - '/opt/data:/bitnami/mariadb'
+    environment:
+      - MARIADB_USER=bn_wordpress
+      - MARIADB_DATABASE=bitnami_wordpress
+      - ALLOW_EMPTY_PASSWORD=yes
+
+  wordpress:
+    image: 'bitnami/wordpress:5.3.2'
+    ports:
+      - '80:8080'
+      - '443:8443'
+    volumes:
+      - '/opt/data/wordpress:/bitnami/wordpress'
+    depends_on:
+      - mariadb
+    environment:
+      - MARIADB_HOST=mariadb
+      - MARIADB_PORT_NUMBER=3306
+      - WORDPRESS_DATABASE_USER=bn_wordpress
+      - WORDPRESS_DATABASE_NAME=bitnami_wordpress
+      - ALLOW_EMPTY_PASSWORD=yes
+
+#  https-portal:
+#    image: steveltn/https-portal:1
+#    ports:
+#      - '80:80'
+#      - '443:443'
+#    links:
+#      - wordpress
+#    restart: always
+#    environment:
+#      DOMAINS: 'tuidang.ddns.net -> http://wordpress:80'
+#      # STAGE: 'production'
+#      # FORCE_RENEW: 'true'
+
